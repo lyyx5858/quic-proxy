@@ -81,8 +81,8 @@ func (qs *QuicStream) RemoteAddr() net.Addr {
 
 type QuicDialer struct {
 	skipCertVerify bool
-	sess           quic.Session
-	sync.Mutex
+	sess           quic.Session  //这个Session是在QuicDialer.Dial()方法中初始化 qd.sess = sess
+	sync.Mutex					//互斥锁
 }
 
 func NewQuicDialer(skipCertVerify bool) *QuicDialer {
@@ -107,7 +107,7 @@ func (qd *QuicDialer) Dial(network, addr string) (net.Conn, error) {
 		qd.sess = sess
 	}
 
-	stream, err := qd.sess.OpenStreamSync(context.TODO())
+	stream, err := qd.sess.OpenStreamSync(context.TODO())  // Sess 理解为连接，一个连接可以有很多个stream.
 	if err != nil {
 		log.Info("[1/2] open stream from session no success:%v, try to open new session", err)
 		qd.sess.CloseWithError(2021, "OpenStreamSync error")
@@ -129,6 +129,6 @@ func (qd *QuicDialer) Dial(network, addr string) (net.Conn, error) {
 		log.Info("[2/2] open stream from new session OK")
 	}
 
-	log.Info("addr:%s, stream_id:%v", addr, stream.StreamID())
+	log.Info("=======addr:%s, stream_id:%v", addr, stream.StreamID())
 	return &QuicStream{sess: qd.sess, Stream: stream}, nil
 }

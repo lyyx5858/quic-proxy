@@ -1,0 +1,1 @@
+qc -v -k -proxy http://hk2.reekis.com:1443  -l 0.0.0.0:7070 -auth test:test123456789
