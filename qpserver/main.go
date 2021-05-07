@@ -11,7 +11,7 @@ import (
 	"flag"
 
 	log "github.com/liudanking/goutil/logutil"
-	"github.com/liudanking/quic-proxy/common"
+	"quic-proxy-liu/common"
 )
 
 func main() {
@@ -60,13 +60,13 @@ func main() {
 
 }
 
-func generateTLSConfig(certFile, keyFile string) *tls.Config {
-	tlsCert, err := tls.LoadX509KeyPair(certFile, keyFile)
-	if err != nil {
+	func generateTLSConfig(certFile, keyFile string) *tls.Config {
+		tlsCert, err := tls.LoadX509KeyPair(certFile, keyFile)
+		if err != nil {
 		panic(err)
 	}
-	return &tls.Config{
+		return &tls.Config{
 		Certificates: []tls.Certificate{tlsCert},
 		NextProtos:   []string{common.KQuicProxy},
 	}
-}
+	}

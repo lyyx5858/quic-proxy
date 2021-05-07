@@ -129,6 +129,6 @@ func (qd *QuicDialer) Dial(network, addr string) (net.Conn, error) {
 		log.Info("[2/2] open stream from new session OK")
 	}
 
-	log.Info("=======addr:%s, stream_id:%v", addr, stream.StreamID())
+	log.Info("addr:%s, stream_id:%v", addr, stream.StreamID())
 	return &QuicStream{sess: qd.sess, Stream: stream}, nil
 }

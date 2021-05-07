@@ -4,11 +4,12 @@ import (
 	"flag"
 	"net/http"
 	"net/url"
+	"quic-proxy-liu/common"
 	"strings"
 
 	"github.com/elazarl/goproxy"
+
 	log "github.com/liudanking/goutil/logutil"
-	"github.com/liudanking/quic-proxy/common"
 )
 
 func main() {
@@ -54,6 +55,7 @@ func main() {
 	}
 
 	dialer := common.NewQuicDialer(skipCertVerify)
+
 	proxy.Tr.Dial = dialer.Dial  //proxy.Tr.Dial 是个在net.Transport结构中定义的一个Func变量，这句话等于用一个Dialer下的Dial方法
 								//给其赋值。因为它们两的签名一致。
 								//赋值以后就是将tcp拨号换成了quic拨号
