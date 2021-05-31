@@ -1,0 +1,1 @@
+qc -v -k -proxy http://127.0.0.1:1443  -l 0.0.0.0:7070 -auth test:test123

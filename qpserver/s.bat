@@ -1,0 +1,1 @@
+qs -v -l 0.0.0.0:1443 -cert ./cert.pem -key ./domain.key -auth test:test123

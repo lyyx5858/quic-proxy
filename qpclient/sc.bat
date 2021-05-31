@@ -1,0 +1,1 @@
+scp -P 22 ./qpclient sikeer@192.168.1.148://home/sikeer/Desktop/gost

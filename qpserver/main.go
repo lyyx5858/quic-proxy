@@ -2,7 +2,10 @@ package main
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net/http"
+	"os"
+	"runtime"
 	"strings"
 
 	"github.com/elazarl/goproxy"
@@ -21,19 +24,30 @@ func main() {
 		key        string
 		auth       string
 		verbose    bool
+		printVersion   bool
 	)
 	flag.StringVar(&listenAddr, "l", ":443", "listen addr (udp port only)")
 	flag.StringVar(&cert, "cert", "", "cert path")
 	flag.StringVar(&key, "key", "", "key path")
 	flag.StringVar(&auth, "auth", "quic-proxy:Go!", "basic auth, format: username:password")
 	flag.BoolVar(&verbose, "v", false, "verbose")
+	flag.BoolVar(&printVersion, "V", false, "print version")
 	flag.Parse()
+
+
+	if printVersion {
+		fmt.Fprintf(os.Stdout, "Quic Server %s (%s %s/%s)\n",
+			"1.0", runtime.Version(), runtime.GOOS, runtime.GOARCH)
+		os.Exit(0)
+	}
+
 
 	log.Info("%v", verbose)
 	if cert == "" || key == "" {
 		log.Error("cert and key can't by empty")
 		return
 	}
+
 
 	parts := strings.Split(auth, ":")
 	if len(parts) != 2 {

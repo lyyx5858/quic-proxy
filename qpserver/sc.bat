@@ -1,0 +1,1 @@
+scp -P 22 ./qpserver root@47.240.165.124:/root/quic

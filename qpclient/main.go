@@ -2,9 +2,12 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"quic-proxy-liu/common"
+	"runtime"
 	"strings"
 
 	"github.com/elazarl/goproxy"
@@ -13,7 +16,7 @@ import (
 )
 
 func main() {
-	log.Debug("client")
+	//log.Debug("client")
 
 	var (
 		listenAddr     string
@@ -21,6 +24,7 @@ func main() {
 		skipCertVerify bool
 		auth           string
 		verbose        bool
+		printVersion   bool
 	)
 
 	flag.StringVar(&listenAddr, "l", ":18080", "listenAddr")
@@ -28,7 +32,14 @@ func main() {
 	flag.BoolVar(&skipCertVerify, "k", false, "skip Cert Verify")
 	flag.StringVar(&auth, "auth", "quic-proxy:Go!", "basic auth, format: username:password")
 	flag.BoolVar(&verbose, "v", false, "verbose")
+	flag.BoolVar(&printVersion, "V", false, "print version")
 	flag.Parse()
+
+	if printVersion {
+		fmt.Fprintf(os.Stdout, "Quic Client %s (%s %s/%s)\n",
+			"1.0", runtime.Version(), runtime.GOOS, runtime.GOARCH)
+		os.Exit(0)
+	}
 
 	proxy := goproxy.NewProxyHttpServer()
 	proxy.Verbose = verbose
@@ -77,5 +88,5 @@ func main() {
 	proxy.OnRequest().Do(SetAuthForBasicRequest(username, password))
 
 	log.Info("start serving %s", listenAddr)
-	log.Error("%v", http.ListenAndServe(listenAddr, proxy))
+	log.Error("%v", http.ListenAndServe(listenAddr, proxy)) //proxy为什么可以在这里当做handler？ 答：因为它有ServeHTTP方法。
 }
