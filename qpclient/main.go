@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/lyyx5858/quic-proxy/common"
 	"net/http"
 	"net/url"
 	"os"
-	"quic-proxy-liu/common"
 	"runtime"
 	"strings"
 
@@ -37,7 +37,7 @@ func main() {
 
 	if printVersion {
 		fmt.Fprintf(os.Stdout, "Quic Client %s (%s %s/%s)\n",
-			"1.0", runtime.Version(), runtime.GOOS, runtime.GOARCH)
+			"1.1 2021-06-21", runtime.Version(), runtime.GOOS, runtime.GOARCH)
 		os.Exit(0)
 	}
 
@@ -67,11 +67,9 @@ func main() {
 
 	dialer := common.NewQuicDialer(skipCertVerify)
 
-	proxy.Tr.Dial = dialer.Dial  //proxy.Tr.Dial 是个在net.Transport结构中定义的一个Func变量，这句话等于用一个Dialer下的Dial方法
-								//给其赋值。因为它们两的签名一致。
-								//赋值以后就是将tcp拨号换成了quic拨号
-
-
+	proxy.Tr.Dial = dialer.Dial //proxy.Tr.Dial 是个在net.Transport结构中定义的一个Func变量，这句话等于用一个Dialer下的Dial方法
+	//给其赋值。因为它们两的签名一致。
+	//赋值以后就是将tcp拨号换成了quic拨号
 
 	// proxy.ConnectDial = proxy.NewConnectDialToProxy(proxyUrl)
 	//这个函数是用来处理第一次建立代理连接时候的CONNECT请求，然后调用上面 proxy.Tr.Dial将TCP改造为quic,然后

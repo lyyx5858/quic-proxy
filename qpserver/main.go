@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/lyyx5858/quic-proxy/common"
 	"net/http"
 	"os"
 	"runtime"
@@ -14,17 +15,16 @@ import (
 	"flag"
 
 	log "github.com/liudanking/goutil/logutil"
-	"quic-proxy-liu/common"
 )
 
 func main() {
 	var (
-		listenAddr string
-		cert       string
-		key        string
-		auth       string
-		verbose    bool
-		printVersion   bool
+		listenAddr   string
+		cert         string
+		key          string
+		auth         string
+		verbose      bool
+		printVersion bool
 	)
 	flag.StringVar(&listenAddr, "l", ":443", "listen addr (udp port only)")
 	flag.StringVar(&cert, "cert", "", "cert path")
@@ -34,20 +34,17 @@ func main() {
 	flag.BoolVar(&printVersion, "V", false, "print version")
 	flag.Parse()
 
-
 	if printVersion {
 		fmt.Fprintf(os.Stdout, "Quic Server %s (%s %s/%s)\n",
-			"1.0", runtime.Version(), runtime.GOOS, runtime.GOARCH)
+			"1.1 2021-06-21", runtime.Version(), runtime.GOOS, runtime.GOARCH)
 		os.Exit(0)
 	}
-
 
 	log.Info("%v", verbose)
 	if cert == "" || key == "" {
 		log.Error("cert and key can't by empty")
 		return
 	}
-
 
 	parts := strings.Split(auth, ":")
 	if len(parts) != 2 {
@@ -74,13 +71,13 @@ func main() {
 
 }
 
-	func generateTLSConfig(certFile, keyFile string) *tls.Config {
-		tlsCert, err := tls.LoadX509KeyPair(certFile, keyFile)
-		if err != nil {
+func generateTLSConfig(certFile, keyFile string) *tls.Config {
+	tlsCert, err := tls.LoadX509KeyPair(certFile, keyFile)
+	if err != nil {
 		panic(err)
 	}
-		return &tls.Config{
+	return &tls.Config{
 		Certificates: []tls.Certificate{tlsCert},
 		NextProtos:   []string{common.KQuicProxy},
 	}
-	}
+}

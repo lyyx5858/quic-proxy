@@ -1,0 +1,39 @@
+// 此文件是对goproxy的elazarl/goproxy/https.go的改写
+// ============Liu Yan add 05-30-2021
+var (
+	lPool = sync.Pool{
+		New: func() interface{} {
+			return make([]byte, 64*1024)
+		},
+	}
+)
+
+func copyBuffer(dst io.Writer, src io.Reader) error {
+	buf := lPool.Get().([]byte)
+	defer lPool.Put(buf)
+
+	_, err := io.CopyBuffer(dst, src, buf)
+	return err
+}
+
+//==================
+
+func copyOrWarn(ctx *ProxyCtx, dst io.Writer, src io.Reader, wg *sync.WaitGroup) {
+//	if _, err := io.Copy(dst, src); err != nil {
+	if err := copyBuffer(dst, src); err != nil {
+		ctx.Warnf("Error copying to client: %s", err)
+	}
+	wg.Done()
+}
+
+func copyAndClose(ctx *ProxyCtx, dst, src halfClosable) {
+	//if _, err := io.Copy(dst, src); err != nil {
+	if err := copyBuffer(dst, src); err != nil {
+		ctx.Warnf("Error copying to client: %s", err)
+	}
+
+	dst.CloseWrite()
+	src.CloseRead()
+}
+
+//=========Modifiy the above two func. 2021-05-30

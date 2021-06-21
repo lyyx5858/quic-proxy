@@ -2,11 +2,9 @@ package main
 
 import (
 	"github.com/elazarl/goproxy"
+	"github.com/lyyx5858/quic-proxy/common"
 	"net/http"
-	"quic-proxy-liu/common"
-
 	//"github.com/liudanking/quic-proxy/common"
-
 )
 
 func SetAuthForBasicRequest(username, password string) goproxy.ReqHandler {

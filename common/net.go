@@ -28,7 +28,7 @@ type AcceptConn struct {
 func NewQuicListener(l quic.Listener) *QuicListener {
 	ql := &QuicListener{
 		Listener:     l,
-		chAcceptConn: make(chan *AcceptConn, 1),
+		chAcceptConn: make(chan *AcceptConn, 4), //此处原来是1，新版改为4
 	}
 	go ql.doAccept()
 	return ql
@@ -81,8 +81,8 @@ func (qs *QuicStream) RemoteAddr() net.Addr {
 
 type QuicDialer struct {
 	skipCertVerify bool
-	sess           quic.Session  //这个Session是在QuicDialer.Dial()方法中初始化 qd.sess = sess
-	sync.Mutex					//互斥锁
+	sess           quic.Session //这个Session是在QuicDialer.Dial()方法中初始化 qd.sess = sess
+	sync.Mutex                  //互斥锁
 }
 
 func NewQuicDialer(skipCertVerify bool) *QuicDialer {
@@ -107,7 +107,7 @@ func (qd *QuicDialer) Dial(network, addr string) (net.Conn, error) {
 		qd.sess = sess
 	}
 
-	stream, err := qd.sess.OpenStreamSync(context.TODO())  // Sess 理解为连接，一个连接可以有很多个stream.
+	stream, err := qd.sess.OpenStreamSync(context.TODO()) // Sess 理解为连接，一个连接可以有很多个stream.
 	if err != nil {
 		log.Info("[1/2] open stream from session no success:%v, try to open new session", err)
 		qd.sess.CloseWithError(2021, "OpenStreamSync error")

@@ -3,11 +3,11 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"github.com/lyyx5858/quic-proxy/common"
 	"io/ioutil"
 	"net/http"
 	"strings"
 
-	"quic-proxy-liu/common"
 	"github.com/elazarl/goproxy"
 	log "github.com/liudanking/goutil/logutil"
 )

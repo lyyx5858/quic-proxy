@@ -7,7 +7,7 @@ build:
 	echo "build done"
 
 run: build 
-	$(SERVICE) -v -l :3443 -cert '../cert/cert.pem' -key '../cert/domain.key'
+	$(SERVICE) -v -p -l :3443 -cert '../cert/cert.pem' -key '../cert/domain.key'
 
 
 
@@ -19,7 +19,6 @@ deploy:
 	ssh vultr-la "source /etc/profile && cd /go/src/github.com/liudanking/quic-proxy/qpserver &&  git pull && git checkout $(branch) && \
 	git branch && make && supervisorctl restart $(SERVICE)" && \
 	echo "deploy done"
-	
 
 
 
