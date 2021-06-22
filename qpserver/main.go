@@ -40,6 +40,11 @@ func main() {
 		os.Exit(0)
 	}
 
+	if flag.NFlag() == 0 {
+		flag.PrintDefaults()
+		os.Exit(0)
+	}
+
 	log.Info("%v", verbose)
 	if cert == "" || key == "" {
 		log.Error("cert and key can't by empty")

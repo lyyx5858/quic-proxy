@@ -85,7 +85,7 @@ type QuicDialer struct {
 	sync.Mutex                  //互斥锁
 }
 
-func NewQuicDialer(skipCertVerify bool) *QuicDialer {
+func NewQuicDialer(skipCertVerify bool) *QuicDialer { //此函数的目的就是建立一个新的QuicDialer结构体
 	return &QuicDialer{
 		skipCertVerify: skipCertVerify,
 	}
