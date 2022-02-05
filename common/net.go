@@ -52,7 +52,7 @@ func (ql *QuicListener) doAccept() {
 					return
 				}
 				log.Info("accept stream %v", stream.StreamID())
-				ql.chAcceptConn <- &AcceptConn{
+				ql.chAcceptConn <- &AcceptConn{ //向channel写入AcceptConn结构体
 					conn: &QuicStream{sess: sess, Stream: stream},
 					err:  nil,
 				}
@@ -62,7 +62,7 @@ func (ql *QuicListener) doAccept() {
 }
 
 func (ql *QuicListener) Accept() (net.Conn, error) {
-	ac := <-ql.chAcceptConn
+	ac := <-ql.chAcceptConn //从channel读取
 	return ac.conn, ac.err
 }
 
